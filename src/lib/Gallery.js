@@ -21,17 +21,27 @@ export class Gallery {
   _createCard(slug, manifest) {
     const card = document.createElement('a')
     card.className = 'comic-card'
-    card.href = `viewer.html?comic=${slug}`
+    card.href = `viewer.html?comic=${encodeURIComponent(slug)}`
     card.style.backgroundColor = manifest.bgColor
-    card.innerHTML = `
-      <div class="comic-card-cover">
-        <img src="/comics/${slug}/${manifest.panels[0].src}" alt="${manifest.title}">
-      </div>
-      <div class="comic-card-body">
-        <h3>${manifest.title}</h3>
-        <span>${manifest.panels.length} panels</span>
-      </div>
-    `
+
+    const cover = document.createElement('div')
+    cover.className = 'comic-card-cover'
+    const img = document.createElement('img')
+    img.src = `/comics/${encodeURIComponent(slug)}/${manifest.panels[0].src}`
+    img.alt = manifest.title
+    cover.appendChild(img)
+
+    const body = document.createElement('div')
+    body.className = 'comic-card-body'
+    const h3 = document.createElement('h3')
+    h3.textContent = manifest.title
+    const span = document.createElement('span')
+    span.textContent = `${manifest.panels.length} panels`
+    body.appendChild(h3)
+    body.appendChild(span)
+
+    card.appendChild(cover)
+    card.appendChild(body)
     return card
   }
 }
