@@ -60,6 +60,6 @@ describe('ClickComic — manifest loading and mount', () => {
   it('sets container bgColor from manifest root for panel 0', async () => {
     const comic = new ClickComic({ container, src: '/comics/test/comic.json' })
     await comic.start()
-    expect(container.style.backgroundColor).toBe('#111111')
+    expect(container.style.backgroundColor).toBe('rgb(17, 17, 17)')
   })
 })
