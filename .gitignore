@@ -1,3 +1,5 @@
 node_modules/
 dist/
 .superpowers/
+node-compile-cache/
+.DS_Store
