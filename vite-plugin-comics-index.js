@@ -16,9 +16,14 @@ export function comicsIndexPlugin() {
   return {
     name: 'comics-index',
     configureServer(server) {
-      server.middlewares.use('/comics/index.json', (_req, res) => {
-        res.setHeader('Content-Type', 'application/json')
-        res.end(JSON.stringify(getSlugs()))
+      server.middlewares.use((req, res, next) => {
+        if (req.url === '/comics/index.json') {
+          res.setHeader('Content-Type', 'application/json')
+          res.setHeader('Cache-Control', 'no-store')
+          res.end(JSON.stringify(getSlugs()))
+        } else {
+          next()
+        }
       })
     },
     generateBundle() {
