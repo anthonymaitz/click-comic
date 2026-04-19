@@ -1,0 +1,69 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0d0d0d;
+  color: #eee;
+  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+.gallery-header {
+  text-align: center;
+  padding: 48px 24px 32px;
+}
+
+.gallery-header h1 {
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  font-weight: 300;
+  font-size: 1.1rem;
+}
+
+.comic-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 0 24px 48px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.comic-card {
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  transition: transform 0.15s ease;
+}
+
+.comic-card:hover {
+  transform: scale(1.02);
+}
+
+.comic-card-cover img {
+  width: 100%;
+  display: block;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.comic-card-body {
+  padding: 10px 12px 14px;
+}
+
+.comic-card-body h3 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ddd;
+  margin-bottom: 4px;
+}
+
+.comic-card-body span {
+  font-size: 0.75rem;
+  color: #666;
+}
