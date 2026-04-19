@@ -1,3 +1,23 @@
+const ADVANCE_KEYS = ['Space', 'ArrowRight', 'ArrowDown']
+const SWIPE_THRESHOLD = 50
+
+const CONTAINER_STYLES = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  overflow: 'hidden'
+}
+
+const IMG_STYLES = {
+  maxWidth: '100%',
+  maxHeight: '100%',
+  objectFit: 'contain',
+  display: 'block',
+  userSelect: 'none',
+  webkitUserSelect: 'none',
+  pointerEvents: 'none'
+}
+
 export class ClickComic {
   constructor({ container, src, onComplete = null }) {
     this.container = container
@@ -7,50 +27,33 @@ export class ClickComic {
     this.currentIndex = 0
     this.autoAdvanceTimer = null
     this._bound = {}
-    this._basePath = src.substring(0, src.lastIndexOf('/') + 1)
+    this._basePath = src.slice(0, src.lastIndexOf('/') + 1)
   }
 
   async start() {
-    const res = await fetch(this.src)
-    this.manifest = await res.json()
+    this.manifest = await fetch(this.src).then(r => r.json())
     await this._preloadImages()
     this._render()
     this._setupListeners()
     this._showPanel(0)
   }
 
-  async _preloadImages() {
+  _preloadImages() {
     return Promise.all(
-      this.manifest.panels.map(
-        panel =>
-          new Promise(resolve => {
-            const img = new Image()
-            img.onload = img.onerror = resolve
-            img.src = this._basePath + panel.src
-          })
-      )
+      this.manifest.panels.map(panel => new Promise(resolve => {
+        const img = new Image()
+        img.onload = img.onerror = resolve
+        img.src = this._basePath + panel.src
+      }))
     )
   }
 
   _render() {
     this.container.innerHTML = ''
-    Object.assign(this.container.style, {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      overflow: 'hidden'
-    })
+    Object.assign(this.container.style, CONTAINER_STYLES)
     this._img = document.createElement('img')
     this._img.draggable = false
-    Object.assign(this._img.style, {
-      maxWidth: '100%',
-      maxHeight: '100%',
-      objectFit: 'contain',
-      display: 'block',
-      userSelect: 'none',
-      webkitUserSelect: 'none',
-      pointerEvents: 'none'
-    })
+    Object.assign(this._img.style, IMG_STYLES)
     this.container.appendChild(this._img)
   }
 
@@ -67,46 +70,45 @@ export class ClickComic {
 
   _advance() {
     const next = this.currentIndex + 1
-    if (next >= this.manifest.panels.length) {
-      if (this.onComplete) {
-        this.onComplete()
-      } else {
-        this._showPanel(0)
-      }
-    } else {
+    if (next < this.manifest.panels.length) {
       this._showPanel(next)
+    } else if (this.onComplete) {
+      this.onComplete()
+    } else {
+      this._showPanel(0)
     }
   }
 
   _setupListeners() {
     let touchStartX = 0
-    this._bound.click = () => this._advance()
-    this._bound.keydown = e => {
-      if (['Space', 'ArrowRight', 'ArrowDown'].includes(e.code)) {
+    const b = this._bound
+    b.click = () => this._advance()
+    b.keydown = e => {
+      if (ADVANCE_KEYS.includes(e.code)) {
         e.preventDefault()
         this._advance()
       }
     }
-    this._bound.touchstart = e => { touchStartX = e.touches[0].clientX }
-    this._bound.touchend = e => {
-      if (touchStartX - e.changedTouches[0].clientX > 50) this._advance()
+    b.touchstart = e => { touchStartX = e.touches[0].clientX }
+    b.touchend = e => {
+      if (touchStartX - e.changedTouches[0].clientX > SWIPE_THRESHOLD) this._advance()
     }
-    this.container.addEventListener('click', this._bound.click)
-    document.addEventListener('keydown', this._bound.keydown)
-    this.container.addEventListener('touchstart', this._bound.touchstart, { passive: true })
-    this.container.addEventListener('touchend', this._bound.touchend, { passive: true })
+    this.container.addEventListener('click', b.click)
+    document.addEventListener('keydown', b.keydown)
+    this.container.addEventListener('touchstart', b.touchstart, { passive: true })
+    this.container.addEventListener('touchend', b.touchend, { passive: true })
   }
 
   destroy() {
     clearTimeout(this.autoAdvanceTimer)
-    this.container.removeEventListener('click', this._bound.click)
-    document.removeEventListener('keydown', this._bound.keydown)
-    this.container.removeEventListener('touchstart', this._bound.touchstart)
-    this.container.removeEventListener('touchend', this._bound.touchend)
+    const b = this._bound
+    this.container.removeEventListener('click', b.click)
+    document.removeEventListener('keydown', b.keydown)
+    this.container.removeEventListener('touchstart', b.touchstart)
+    this.container.removeEventListener('touchend', b.touchend)
     this.container.innerHTML = ''
-    ;['display', 'alignItems', 'justifyContent', 'overflow', 'backgroundColor'].forEach(
-      k => { this.container.style[k] = '' }
-    )
+    for (const key of Object.keys(CONTAINER_STYLES)) this.container.style[key] = ''
+    this.container.style.backgroundColor = ''
     this._img = null
     this.manifest = null
   }

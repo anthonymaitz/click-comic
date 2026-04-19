@@ -33,11 +33,10 @@ body {
 }
 
 .comic-card {
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  text-decoration: none;
   display: block;
+  overflow: hidden;
+  border-radius: 8px;
+  text-decoration: none;
   transition: transform 0.15s ease;
 }
 
@@ -46,8 +45,8 @@ body {
 }
 
 .comic-card-cover img {
-  width: 100%;
   display: block;
+  width: 100%;
   aspect-ratio: 3 / 4;
   object-fit: cover;
 }
