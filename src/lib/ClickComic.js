@@ -41,12 +41,14 @@ export class ClickComic {
       overflow: 'hidden'
     })
     this._img = document.createElement('img')
+    this._img.draggable = false
     Object.assign(this._img.style, {
       maxWidth: '100%',
       maxHeight: '100%',
       objectFit: 'contain',
       display: 'block',
       userSelect: 'none',
+      webkitUserSelect: 'none',
       pointerEvents: 'none'
     })
     this.container.appendChild(this._img)
