@@ -64,7 +64,6 @@ export class ClickComic {
   }
 
   _advance() {
-    clearTimeout(this.autoAdvanceTimer)
     const next = this.currentIndex + 1
     if (next >= this.manifest.panels.length) {
       if (this.onComplete) {
@@ -106,5 +105,7 @@ export class ClickComic {
     ;['display', 'alignItems', 'justifyContent', 'overflow', 'backgroundColor'].forEach(
       k => { this.container.style[k] = '' }
     )
+    this._img = null
+    this.manifest = null
   }
 }
