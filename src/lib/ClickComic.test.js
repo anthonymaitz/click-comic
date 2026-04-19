@@ -72,11 +72,13 @@ describe('ClickComic — panel display', () => {
     document.body.appendChild(container)
     mockFetch()
     mockImage()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
     container.remove()
     vi.restoreAllMocks()
+    vi.useRealTimers()
   })
 
   it('updates img src on advance', async () => {
