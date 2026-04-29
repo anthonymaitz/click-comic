@@ -4,9 +4,9 @@ export class Gallery {
   }
 
   async render() {
-    const slugs = await fetch('/comics/index.json').then(r => r.json())
+    const slugs = await fetch(import.meta.env.BASE_URL + 'comics/index.json').then(r => r.json())
     const entries = await Promise.all(slugs.map(async slug => {
-      const manifest = await fetch(`/comics/${slug}/comic.json`).then(r => r.json())
+      const manifest = await fetch(`${import.meta.env.BASE_URL}comics/${slug}/comic.json`).then(r => r.json())
       return { slug, manifest }
     }))
     this.container.innerHTML = ''
@@ -24,7 +24,7 @@ function createCard({ slug, manifest }) {
   card.style.backgroundColor = manifest.bgColor
   card.innerHTML = `
     <div class="comic-card-cover">
-      <img src="/comics/${encodedSlug}/${manifest.panels[0].src}" alt="">
+      <img src="${import.meta.env.BASE_URL}comics/${encodedSlug}/${manifest.panels[0].src}" alt="">
     </div>
     <div class="comic-card-body">
       <h3></h3>
