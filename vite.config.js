@@ -4,6 +4,7 @@ import { comicsIndexPlugin } from './vite-plugin-comics-index.js'
 
 export default defineConfig({
   plugins: [comicsIndexPlugin()],
+  server: { host: true, allowedHosts: true },
   build: {
     rollupOptions: {
       input: {
